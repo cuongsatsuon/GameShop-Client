@@ -41,6 +41,20 @@ export interface Account {
   isSold?: boolean;
   seller: string;
   createdAt: string;
+  /**
+   * Dropship supplier source. When set (e.g. "vieblox"), this listing is a
+   * supplier product: buying routes to the supplier flow and uses the fields
+   * below instead of the nick (account) buy.
+   */
+  source?: "vieblox";
+  /** supplier_products.id — the buy target for POST /vieblox/buy. */
+  supplierProductId?: number;
+  /** Live supplier stock + per-order quantity bounds. */
+  stock?: number;
+  minQty?: number;
+  maxQty?: number;
+  /** Short supplier description (e.g. "24h warranty"). */
+  description?: string;
 }
 
 /** Blog / news article. */

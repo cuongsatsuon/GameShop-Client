@@ -3,6 +3,7 @@
  * backend and map its DTOs into the storefront's view types (`@/types`), so the
  * components stay unchanged. Mirror this file to migrate the rest off the mock.
  */
+import { cache } from "react";
 import { apiGet } from "@/lib/api";
 import type { Account, BlogPost, Category, LeaderboardEntry } from "@/types";
 
@@ -68,17 +69,91 @@ function mapAccount(a: ApiAccount): Account {
   };
 }
 
+// ---- Vieblox (dropship supplier) — merged into the main catalog ----
+// Each supplier product is mapped into an `Account` with an offset id so the
+// existing /nick/[id] route + grids render it; the buy is routed to /vieblox/buy.
+const VB_ID_OFFSET = 9_000_000;
+const VB_SLUG_PREFIX = "bf"; // category slug = `bf-<externalId>`
+
+/** True when an account id actually points at a vieblox supplier product. */
+export const isViebloxAccountId = (id: number) => id >= VB_ID_OFFSET;
+
+interface VbApiProduct {
+  id: number;
+  externalId: string;
+  categoryExternalId: string | null;
+  name: string;
+  description: string | null;
+  price: number;
+  stock: number;
+  minQty: number;
+  maxQty: number;
+  flag: string | null;
+}
+interface VbApiCategory {
+  id: number;
+  externalId: string;
+  name: string;
+  icon: string | null;
+  products: VbApiProduct[];
+}
+
+function vbSlug(externalId: string): string {
+  return `${VB_SLUG_PREFIX}-${externalId}`;
+}
+function mapVbCategory(c: VbApiCategory): Category {
+  return { slug: vbSlug(c.externalId), name: c.name, icon: "🍇", count: c.products.length, gradient: "from-red-500 to-rose-600" };
+}
+function mapVbProduct(p: VbApiProduct, c: VbApiCategory): Account {
+  return {
+    id: VB_ID_OFFSET + p.id,
+    categorySlug: vbSlug(c.externalId),
+    game: "Blox Fruits",
+    tier: p.name,
+    rank: c.name,
+    heroes: 0,
+    skins: 0,
+    price: p.price,
+    views: 0,
+    images: [c.icon ?? `https://picsum.photos/seed/vb-${p.id}/640/420`],
+    seller: "vieblox",
+    createdAt: "",
+    source: "vieblox",
+    supplierProductId: p.id,
+    stock: p.stock,
+    minQty: p.minQty,
+    maxQty: p.maxQty,
+    description: p.description ?? undefined,
+  };
+}
+
+/** Fetch + map the vieblox public catalog once per request (deduped via cache). */
+const fetchViebloxCatalog = cache(async (): Promise<{ categories: Category[]; accounts: Account[] }> => {
+  try {
+    const data = await apiGet<VbApiCategory[]>("/vieblox/products");
+    return {
+      categories: data.map(mapVbCategory),
+      accounts: data.flatMap((c) => (c.products ?? []).map((p) => mapVbProduct(p, c))),
+    };
+  } catch {
+    return { categories: [], accounts: [] };
+  }
+});
+
 /** Home category grid + category header. Returns [] if the BE is unreachable. */
 export async function fetchCategories(): Promise<Category[]> {
-  try {
-    const data = await apiGet<ApiCategory[]>("/categories");
-    return data.map(mapCategory);
-  } catch {
-    return [];
-  }
+  const [real, vb] = await Promise.all([
+    apiGet<ApiCategory[]>("/categories").then((d) => d.map(mapCategory)).catch(() => [] as Category[]),
+    fetchViebloxCatalog(),
+  ]);
+  return [...real, ...vb.categories];
 }
 
 export async function fetchCategory(slug: string): Promise<Category | undefined> {
+  if (slug.startsWith(`${VB_SLUG_PREFIX}-`)) {
+    const vb = await fetchViebloxCatalog();
+    return vb.categories.find((c) => c.slug === slug);
+  }
   try {
     const data = await apiGet<ApiCategory>(`/categories/${slug}`);
     return mapCategory(data);
@@ -88,6 +163,10 @@ export async function fetchCategory(slug: string): Promise<Category | undefined>
 }
 
 export async function fetchAccountsByCategory(slug: string): Promise<Account[]> {
+  if (slug.startsWith(`${VB_SLUG_PREFIX}-`)) {
+    const vb = await fetchViebloxCatalog();
+    return vb.accounts.filter((a) => a.categorySlug === slug);
+  }
   try {
     const data = await apiGet<ApiAccount[]>(`/accounts?categorySlug=${encodeURIComponent(slug)}&limit=100`);
     return data.map(mapAccount);
@@ -96,27 +175,29 @@ export async function fetchAccountsByCategory(slug: string): Promise<Account[]> 
   }
 }
 
-/** Newest listings (home "Nick Mới Cập Nhật"). */
+/** Newest listings (home "Nick Mới Cập Nhật") — real accounts first, then vieblox. */
 export async function fetchNewestAccounts(limit = 12): Promise<Account[]> {
-  try {
-    const data = await apiGet<ApiAccount[]>(`/accounts?limit=${limit}`);
-    return data.map(mapAccount);
-  } catch {
-    return [];
-  }
+  const [real, vb] = await Promise.all([
+    apiGet<ApiAccount[]>(`/accounts?limit=${limit}`).then((d) => d.map(mapAccount)).catch(() => [] as Account[]),
+    fetchViebloxCatalog(),
+  ]);
+  return [...real, ...vb.accounts].slice(0, limit);
 }
 
 /** Featured / hot listings (home "Nick Siêu Phẩm"). */
 export async function fetchFeaturedAccounts(limit = 5): Promise<Account[]> {
-  try {
-    const data = await apiGet<ApiAccount[]>(`/accounts?status=selling&limit=${limit}`);
-    return data.map(mapAccount);
-  } catch {
-    return [];
-  }
+  const [real, vb] = await Promise.all([
+    apiGet<ApiAccount[]>(`/accounts?status=selling&limit=${limit}`).then((d) => d.map(mapAccount)).catch(() => [] as Account[]),
+    fetchViebloxCatalog(),
+  ]);
+  return [...real, ...vb.accounts].slice(0, limit);
 }
 
 export async function fetchAccount(id: number): Promise<Account | undefined> {
+  if (isViebloxAccountId(id)) {
+    const vb = await fetchViebloxCatalog();
+    return vb.accounts.find((a) => a.id === id);
+  }
   try {
     return mapAccount(await apiGet<ApiAccount>(`/accounts/${id}`));
   } catch {
@@ -129,6 +210,10 @@ export async function fetchSimilarAccounts(
   excludeId: number,
   limit = 5
 ): Promise<Account[]> {
+  if (categorySlug.startsWith(`${VB_SLUG_PREFIX}-`)) {
+    const vb = await fetchViebloxCatalog();
+    return vb.accounts.filter((a) => a.categorySlug === categorySlug && a.id !== excludeId).slice(0, limit);
+  }
   try {
     const data = await apiGet<ApiAccount[]>(
       `/accounts?categorySlug=${encodeURIComponent(categorySlug)}&limit=${limit + 1}`

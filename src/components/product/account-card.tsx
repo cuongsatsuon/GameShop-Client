@@ -83,9 +83,18 @@ export function AccountCard({ account, className }: { account: Account; classNam
         </h3>
 
         <div className="flex flex-wrap gap-1">
-          <Spec label="rank" value={account.rank} />
-          <Spec label="tướng" value={account.heroes} />
-          <Spec label="skin" value={account.skins} />
+          {account.source === "vieblox" ? (
+            <>
+              <Spec label="loại" value={account.rank} />
+              <Spec label="kho" value={formatNumber(account.stock ?? 0)} />
+            </>
+          ) : (
+            <>
+              <Spec label="rank" value={account.rank} />
+              <Spec label="tướng" value={account.heroes} />
+              <Spec label="skin" value={account.skins} />
+            </>
+          )}
         </div>
 
         <div className="mt-auto flex items-end justify-between pt-1">

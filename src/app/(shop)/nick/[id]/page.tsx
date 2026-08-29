@@ -16,6 +16,7 @@ import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { AccountCard } from "@/components/product/account-card";
 import { AccountGallery } from "@/components/product/account-gallery";
 import { BuyButton } from "@/components/product/buy-button";
+import { ViebloxBuyPanel } from "@/components/product/vieblox-buy-panel";
 import { discountPercent, formatNumber, formatVND } from "@/lib/utils";
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
@@ -27,13 +28,21 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     getSession(),
   ]);
 
-  const specs: [string, string | number][] = [
-    ["Rank", account.rank],
-    ["Tướng", account.heroes],
-    ["Skin", account.skins],
-    ["Ngọc", "10 bảng"],
-    ["Hồ Sơ", "Trắng"],
-  ];
+  const isVb = account.source === "vieblox";
+  const specs: [string, string | number][] = isVb
+    ? [
+        ["Loại", account.rank],
+        ["Kho còn", formatNumber(account.stock ?? 0)],
+        ["Mua tối thiểu", account.minQty ?? 1],
+        ...(account.description ? ([["Mô tả", account.description]] as [string, string][]) : []),
+      ]
+    : [
+        ["Rank", account.rank],
+        ["Tướng", account.heroes],
+        ["Skin", account.skins],
+        ["Ngọc", "10 bảng"],
+        ["Hồ Sơ", "Trắng"],
+      ];
 
   return (
     <div className="container-page py-8 space-y-8">
@@ -65,14 +74,23 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
               <User className="h-4 w-4" />
               {account.seller}
             </span>
-            <span className="inline-flex items-center gap-1.5">
-              <Calendar className="h-4 w-4" />
-              {account.createdAt}
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <Eye className="h-4 w-4" />
-              {formatNumber(account.views)}
-            </span>
+            {isVb ? (
+              <span className="inline-flex items-center gap-1.5">
+                <Calendar className="h-4 w-4" />
+                Còn {formatNumber(account.stock ?? 0)}
+              </span>
+            ) : (
+              <>
+                <span className="inline-flex items-center gap-1.5">
+                  <Calendar className="h-4 w-4" />
+                  {account.createdAt}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Eye className="h-4 w-4" />
+                  {formatNumber(account.views)}
+                </span>
+              </>
+            )}
           </div>
 
           <div className="surface bg-gradient-brand-soft p-5 space-y-2">
@@ -103,20 +121,27 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
             )}
           </div>
 
-          <BuyButton
-            accountId={account.id}
-            isSold={!!account.isSold}
-            isLoggedIn={!!user}
-          />
+          {isVb ? (
+            <ViebloxBuyPanel
+              supplierProductId={account.supplierProductId ?? 0}
+              price={account.price}
+              stock={account.stock ?? 0}
+              minQty={account.minQty ?? 1}
+              maxQty={account.maxQty ?? 1}
+              isLoggedIn={!!user}
+            />
+          ) : (
+            <BuyButton accountId={account.id} isSold={!!account.isSold} isLoggedIn={!!user} />
+          )}
 
           <div className="surface p-3 flex flex-wrap gap-x-5 gap-y-2 text-sm">
             <span className="inline-flex items-center gap-1.5">
               <ShieldCheck className="h-4 w-4 text-success" />
-              Bảo hành trọn đời
+              {isVb ? "Hàng từ nhà cung cấp" : "Bảo hành trọn đời"}
             </span>
             <span className="inline-flex items-center gap-1.5">
               <Zap className="h-4 w-4 text-primary" />
-              Nhận nick tự động ngay
+              {isVb ? "Giao tự động ngay" : "Nhận nick tự động ngay"}
             </span>
             <span className="inline-flex items-center gap-1.5">
               <Clock className="h-4 w-4 text-accent" />
@@ -126,7 +151,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
           <div className="surface overflow-hidden">
             <div className="border-b px-4 py-3 font-display text-sm uppercase">
-              Thông tin nick
+              {isVb ? "Thông tin sản phẩm" : "Thông tin nick"}
             </div>
             {specs.map(([label, value]) => (
               <div
@@ -141,7 +166,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         </div>
       </div>
 
-      <SectionHeader title="Nick" highlight="Tương Tự" />
+      <SectionHeader title={isVb ? "Sản phẩm" : "Nick"} highlight="Tương Tự" />
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
         {similar.map((a) => (
           <AccountCard key={a.id} account={a} />
