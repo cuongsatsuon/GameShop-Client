@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, Copy, ShoppingCart } from "lucide-react";
+import { CheckCircle2, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { apiPost } from "@/lib/auth-client";
 import { formatNumber, formatVND } from "@/lib/utils";
+import { DeliveredGoods } from "@/components/product/delivered-goods";
 
 interface VbOrderResult {
   code: string;
@@ -43,7 +44,6 @@ export function ViebloxBuyPanel({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<VbOrderResult | null>(null);
-  const [copied, setCopied] = useState<number | null>(null);
 
   const total = price * qty;
 
@@ -68,16 +68,6 @@ export function ViebloxBuyPanel({
     }
   }
 
-  async function copy(text: string, i: number) {
-    try {
-      await navigator.clipboard?.writeText(text);
-      setCopied(i);
-      setTimeout(() => setCopied((c) => (c === i ? null : c)), 1500);
-    } catch {
-      /* clipboard blocked — ignore */
-    }
-  }
-
   if (result) {
     return (
       <div className="space-y-3">
@@ -91,23 +81,7 @@ export function ViebloxBuyPanel({
         </div>
         <div className="surface space-y-2 p-3">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Hàng của bạn</p>
-          <div className="max-h-56 space-y-1 overflow-auto">
-            {result.items.map((it, i) => (
-              <div
-                key={i}
-                className="flex items-center justify-between gap-2 rounded-md bg-secondary/60 px-2.5 py-1.5 font-mono text-xs"
-              >
-                <span className="break-all">{it}</span>
-                <button
-                  onClick={() => copy(it, i)}
-                  className="shrink-0 text-muted-foreground hover:text-foreground"
-                  aria-label="Sao chép"
-                >
-                  {copied === i ? <CheckCircle2 className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
-                </button>
-              </div>
-            ))}
-          </div>
+          <DeliveredGoods items={result.items} />
           <p className="text-xs text-muted-foreground">Lưu lại thông tin trên. Bạn cũng có thể xem lại trong trang cá nhân.</p>
         </div>
       </div>

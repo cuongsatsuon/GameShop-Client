@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, Copy, Eye, EyeOff, Package } from "lucide-react";
+import { Eye, EyeOff, Package } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { formatVND } from "@/lib/utils";
+import { DeliveredGoods } from "@/components/product/delivered-goods";
 
 export interface UiOrder {
   key: string;
@@ -33,17 +34,6 @@ function fmtDateTime(iso: string) {
 
 export function OrdersList({ orders }: { orders: UiOrder[] }) {
   const [open, setOpen] = useState<string | null>(null);
-  const [copied, setCopied] = useState<string | null>(null);
-
-  async function copy(text: string, id: string) {
-    try {
-      await navigator.clipboard?.writeText(text);
-      setCopied(id);
-      setTimeout(() => setCopied((c) => (c === id ? null : c)), 1500);
-    } catch {
-      /* clipboard blocked — ignore */
-    }
-  }
 
   if (orders.length === 0) {
     return (
@@ -99,30 +89,7 @@ export function OrdersList({ orders }: { orders: UiOrder[] }) {
                   <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Hàng của bạn ({o.items!.length})
                   </p>
-                  <div className="max-h-60 space-y-1 overflow-auto">
-                    {o.items!.map((it, i) => {
-                      const cid = `${o.key}-${i}`;
-                      return (
-                        <div
-                          key={cid}
-                          className="flex items-center justify-between gap-2 rounded-md bg-secondary/60 px-2.5 py-1.5 font-mono text-xs"
-                        >
-                          <span className="break-all">{it}</span>
-                          <button
-                            onClick={() => copy(it, cid)}
-                            className="shrink-0 text-muted-foreground hover:text-foreground"
-                            aria-label="Sao chép"
-                          >
-                            {copied === cid ? (
-                              <CheckCircle2 className="h-3.5 w-3.5 text-success" />
-                            ) : (
-                              <Copy className="h-3.5 w-3.5" />
-                            )}
-                          </button>
-                        </div>
-                      );
-                    })}
-                  </div>
+                  <DeliveredGoods items={o.items!} />
                 </div>
               )}
 
