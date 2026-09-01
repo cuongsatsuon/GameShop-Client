@@ -4,7 +4,6 @@ import { BrandLogo } from "@/components/ui/brand-logo";
 import {
   footerProducts,
   footerSupport,
-  paymentMethods,
   siteConfig,
 } from "@/config/site";
 
@@ -47,7 +46,7 @@ export function SiteFooter() {
   return (
     <footer className="mt-16 border-t border-border bg-card/40">
       <div className="container-page py-12">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1.2fr]">
+        <div className="grid gap-10 md:grid-cols-3 lg:grid-cols-[1.6fr_1fr_1fr]">
           {/* Brand */}
           <div>
             <BrandLogo withTagline={false} />
@@ -71,22 +70,6 @@ export function SiteFooter() {
           <FooterColumn title="Sản phẩm" links={footerProducts} />
           <FooterColumn title="Hỗ trợ" links={footerSupport} />
 
-          {/* Payments */}
-          <div>
-            <h3 className="mb-4 font-display text-sm font-bold uppercase tracking-wide">
-              Phương thức thanh toán
-            </h3>
-            <div className="flex flex-wrap gap-1.5">
-              {paymentMethods.map((m) => (
-                <span
-                  key={m}
-                  className="rounded-md border border-border bg-secondary/50 px-2 py-1 text-[11px] font-semibold text-muted-foreground"
-                >
-                  {m}
-                </span>
-              ))}
-            </div>
-          </div>
         </div>
 
         <div className="mt-10 flex flex-col items-center justify-between gap-2 border-t border-border pt-6 text-center text-xs text-muted-foreground sm:flex-row sm:text-left">

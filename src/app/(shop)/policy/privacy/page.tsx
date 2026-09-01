@@ -15,7 +15,7 @@ export default function PrivacyPage() {
         </h1>
 
         <p className="text-muted-foreground leading-relaxed">
-          SHOPNICK tôn trọng và cam kết bảo vệ thông tin cá nhân của khách hàng. Chính
+          VUAROLOX tôn trọng và cam kết bảo vệ thông tin cá nhân của khách hàng. Chính
           sách này giải thích cách chúng tôi thu thập, sử dụng và bảo vệ dữ liệu của
           bạn.
         </p>

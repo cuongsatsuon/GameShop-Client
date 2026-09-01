@@ -3,7 +3,6 @@ import { StatsBar } from "@/components/home/stats-bar";
 import { ActivityTicker } from "@/components/home/activity-ticker";
 import { FeaturedSection } from "@/components/home/featured-section";
 import { NewArrivalsSection } from "@/components/home/new-arrivals-section";
-import { CtaSection } from "@/components/home/cta-section";
 import { ServicesSection } from "@/components/home/services-section";
 
 export default function HomePage() {
@@ -19,7 +18,6 @@ export default function HomePage() {
       <FeaturedSection />
       <NewArrivalsSection />
       <ServicesSection />
-      <CtaSection />
     </div>
   );
 }

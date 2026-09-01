@@ -75,7 +75,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
         <Input
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder={isLogin ? "member1" : "user_name"}
+          placeholder="ten_dang_nhap"
           autoComplete="username"
           required
         />
@@ -134,30 +134,9 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
         </div>
       )}
 
-      {!isLogin && (
-        <label className="flex items-center gap-2 text-xs text-muted-foreground">
-          <input type="checkbox" className="accent-primary" required />
-          <span>
-            Tôi đồng ý với{" "}
-            <Link href="/policy/terms" className="text-primary">
-              Điều khoản
-            </Link>{" "}
-            và{" "}
-            <Link href="/policy/privacy" className="text-primary">
-              Chính sách bảo mật
-            </Link>
-          </span>
-        </label>
-      )}
-
       <Button type="submit" variant="gradient" size="lg" className="w-full" disabled={loading}>
         {loading ? "Đang xử lý..." : isLogin ? "Đăng nhập" : "Đăng ký ngay"}
       </Button>
-
-      <p className="text-center text-xs text-muted-foreground">
-        Demo: đăng nhập với <span className="font-semibold">member1</span> / mật khẩu{" "}
-        <span className="font-semibold">admin123</span>.
-      </p>
     </form>
   );
 }

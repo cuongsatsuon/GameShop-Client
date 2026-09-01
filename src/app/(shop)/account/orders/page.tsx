@@ -60,6 +60,7 @@ function mapOrder(o: ApiOrder): UiOrder {
     statusLabel: st.label,
     statusVariant: st.variant,
     createdAt: o.createdAt,
+    statusNote: o.status === "refunded" ? "Hệ thống đã hoàn tiền" : undefined,
   };
 }
 
@@ -74,9 +75,10 @@ function mapVb(o: ApiVbOrder): UiOrder {
     statusLabel: st.label,
     statusVariant: st.variant,
     createdAt: o.createdAt,
+    statusNote: o.status === "refunded" ? "Hệ thống đã hoàn tiền" : undefined,
     items: o.status === "delivered" ? o.items : undefined,
-    // show the reason only for failed/refunded/error states
-    errorMsg: o.status === "delivered" ? null : o.errorMsg,
+    // A refund is a completed business outcome, not an error to surface.
+    errorMsg: o.status === "refunded" ? null : o.status === "delivered" ? null : o.errorMsg,
   };
 }
 

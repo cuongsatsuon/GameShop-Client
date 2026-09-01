@@ -77,7 +77,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: "affiliate-shopnick",
-    title: "Cách kiếm tiền từ Affiliate SHOPNICK — Thu nhập 5-10tr/tháng",
+    title: "Cách kiếm tiền từ Affiliate VUAROLOX — Thu nhập 5-10tr/tháng",
     excerpt:
       "Hướng dẫn chi tiết tận dụng hệ thống affiliate để có thu nhập thụ động...",
     category: "Hướng dẫn",

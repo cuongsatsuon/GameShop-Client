@@ -2,13 +2,13 @@ import type { Carrier } from "@/types";
 
 /** Global, presentation-level site configuration (nav, brand, static option lists). */
 export const siteConfig = {
-  name: "BLOXSHOP",
-  wordmark: { first: "BLOX", second: "SHOP" },
-  tagline: "PLAY · SAFE · FUN",
+  name: "VUAROLOX",
+  wordmark: { first: "VUA", second: "ROLOX" },
+  tagline: "ACCOUNT ROBLOX",
   description:
     "Cửa hàng account Roblox dễ chọn, thông tin rõ ràng và hỗ trợ 24/7.",
   legal: {
-    copyright: "© 2026 BLOXSHOP. Bản quyền thuộc về BLOXSHOP.",
+    copyright: "© 2026 VUAROLOX. Bản quyền thuộc về VUAROLOX.",
     license: "Giao dịch minh bạch · Hỗ trợ người dùng 24/7",
   },
 } as const;
@@ -56,8 +56,3 @@ export const footerSupport = [
   { label: "Liên hệ", href: "/contact" },
 ];
 
-/** Payment method chips shown in the footer. */
-export const paymentMethods = [
-  "VCB", "TCB", "ACB", "BIDV", "VPB", "TPB",
-  "MOMO", "ZALO", "VIETTEL", "VINA", "MOBI",
-];

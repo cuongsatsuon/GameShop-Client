@@ -15,6 +15,7 @@ export interface UiOrder {
   statusLabel: string;
   statusVariant: "success" | "accent" | "outline" | "muted";
   createdAt: string;
+  statusNote?: string;
   /** Delivered goods (vieblox) — one "<subid>|<CODE>" per unit. */
   items?: string[];
   errorMsg?: string | null;
@@ -64,6 +65,9 @@ export function OrdersList({ orders }: { orders: UiOrder[] }) {
                   </div>
                   <p className="mt-0.5 truncate font-medium">{o.productName}</p>
                   <p className="text-xs text-muted-foreground">{fmtDateTime(o.createdAt)}</p>
+                  {o.statusNote && (
+                    <p className="mt-0.5 text-xs font-medium text-success">{o.statusNote}</p>
+                  )}
                 </div>
                 <div className="flex items-center gap-3">
                   {hasItems && (

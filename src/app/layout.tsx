@@ -25,8 +25,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "BLOXSHOP · Account Roblox dễ chọn",
-    template: "%s · BLOXSHOP",
+    default: "VUAROLOX · Account Roblox dễ chọn",
+    template: "%s · VUAROLOX",
   },
   description: siteConfig.description,
 };

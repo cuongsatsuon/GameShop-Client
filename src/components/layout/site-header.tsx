@@ -55,8 +55,8 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-xl">
-      <div className="container-page flex h-16 items-center gap-4">
-        <BrandLogo />
+      <div className="container-page flex h-14 items-center gap-3">
+        <BrandLogo withTagline={false} />
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-1 lg:flex">
@@ -65,7 +65,7 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
               key={item.href}
               href={item.href}
               className={cn(
-                "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                "rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors",
                 isActive(item.href)
                   ? "text-primary"
                   : "accent" in item && item.accent
@@ -84,7 +84,7 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
           <input
             type="search"
           placeholder="Tìm account, game, ID..."
-            className="h-10 w-full rounded-lg border border-input bg-secondary/60 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-primary/60 focus-visible:outline-none"
+          className="h-9 w-full rounded-lg border border-input bg-secondary/60 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-primary/60 focus-visible:outline-none"
           />
         </div>
 

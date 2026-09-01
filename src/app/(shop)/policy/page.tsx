@@ -15,7 +15,7 @@ export default function WarrantyPolicyPage() {
         </h1>
 
         <p className="text-muted-foreground leading-relaxed">
-          SHOPNICK cam kết bảo hành trọn đời thông tin đăng nhập cho mọi tài khoản
+          VUAROLOX cam kết bảo hành trọn đời thông tin đăng nhập cho mọi tài khoản
           được bán ra. Trong trường hợp phát sinh lỗi liên quan đến quyền sở hữu, đội
           ngũ hỗ trợ sẽ xử lý nhanh chóng và minh bạch.
         </p>
@@ -44,7 +44,7 @@ export default function WarrantyPolicyPage() {
         </h2>
         <p className="text-muted-foreground leading-relaxed">
           Mọi giao dịch đều được ghi nhận và lưu trữ để bảo vệ quyền lợi của khách hàng.
-          SHOPNICK ưu tiên uy tín và sự an tâm của bạn trong suốt quá trình sử dụng.
+          VUAROLOX ưu tiên uy tín và sự an tâm của bạn trong suốt quá trình sử dụng.
         </p>
       </div>
     </div>

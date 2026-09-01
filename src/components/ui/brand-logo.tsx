@@ -5,12 +5,12 @@ import { siteConfig } from "@/config/site";
 
 interface BrandLogoProps {
   className?: string;
-  /** Show the small "UY TÍN · 24/7" tagline under the wordmark. */
+  /** Show the small brand tagline under the wordmark. */
   withTagline?: boolean;
   href?: string;
 }
 
-/** The SHOPNICK wordmark: gradient controller tile + two-tone text. */
+/** The VUAROLOX wordmark: gradient controller tile + two-tone text. */
 export function BrandLogo({
   className,
   withTagline = true,

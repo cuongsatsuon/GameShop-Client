@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, ShoppingBag, ArrowLeftRight, CreditCard, Banknote } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, ArrowLeftRight, CreditCard } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const links = [
@@ -10,7 +10,6 @@ const links = [
   { href: "/account/orders", label: "Đơn hàng", icon: ShoppingBag },
   { href: "/account/transactions", label: "Lịch sử ví", icon: ArrowLeftRight },
   { href: "/account/recharge", label: "Nạp tiền", icon: CreditCard },
-  { href: "/account/withdraw", label: "Rút tiền", icon: Banknote },
 ];
 
 export function AccountNav() {

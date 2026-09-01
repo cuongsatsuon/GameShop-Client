@@ -55,7 +55,7 @@ export function TopupWidget() {
           <FieldLabel>Mệnh giá</FieldLabel>
           <div className="relative"><select value={amount} onChange={(e) => setAmount(Number(e.target.value))} className={selectClass} aria-label="Chọn mệnh giá">{denominations.map((value) => <option key={value} value={value}>{formatVND(value)}</option>)}</select><ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" /></div>
         </div>
-        <div><FieldLabel>Mã thẻ</FieldLabel><Input value={pin} onChange={(e) => setPin(e.target.value)} placeholder="Nhập mã PIN" required className="h-12 rounded-xl" /></div>
+        <div><FieldLabel>Mã thẻ</FieldLabel><Input value={pin} onChange={(e) => setPin(e.target.value)} placeholder="Nhập mã thẻ" required className="h-12 rounded-xl" /></div>
         <div><FieldLabel>Số serial</FieldLabel><Input value={serial} onChange={(e) => setSerial(e.target.value)} placeholder="Nhập số serial" required className="h-12 rounded-xl" /></div>
       </div>
 

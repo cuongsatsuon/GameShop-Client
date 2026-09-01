@@ -15,7 +15,7 @@ export default function TermsPage() {
         </h1>
 
         <p className="text-muted-foreground leading-relaxed">
-          Khi truy cập và sử dụng dịch vụ của SHOPNICK, bạn đồng ý tuân thủ các điều
+          Khi truy cập và sử dụng dịch vụ của VUAROLOX, bạn đồng ý tuân thủ các điều
           khoản dưới đây. Vui lòng đọc kỹ để đảm bảo quyền lợi của mình trong suốt quá
           trình giao dịch.
         </p>
@@ -33,7 +33,7 @@ export default function TermsPage() {
           Giao dịch và thanh toán
         </h2>
         <p className="text-muted-foreground leading-relaxed">
-          Tất cả giao dịch được thực hiện trên nền tảng chính thức của SHOPNICK. Chúng
+          Tất cả giao dịch được thực hiện trên nền tảng chính thức của VUAROLOX. Chúng
           tôi không chịu trách nhiệm với các giao dịch phát sinh ngoài hệ thống hoặc
           thông qua bên thứ ba không được ủy quyền.
         </p>
@@ -42,7 +42,7 @@ export default function TermsPage() {
           Thay đổi điều khoản
         </h2>
         <p className="text-muted-foreground leading-relaxed">
-          SHOPNICK có quyền cập nhật điều khoản bất kỳ lúc nào nhằm phù hợp với quy định
+          VUAROLOX có quyền cập nhật điều khoản bất kỳ lúc nào nhằm phù hợp với quy định
           pháp luật và chính sách vận hành. Các thay đổi sẽ được thông báo công khai
           trên website.
         </p>
