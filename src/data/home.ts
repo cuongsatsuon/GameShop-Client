@@ -39,19 +39,19 @@ export const heroSlides = [
 
 /** Trust stats row under the hero. */
 export const heroStats = [
-  { value: "50K+", label: "Khách hàng", icon: "users" as const },
-  { value: "10K+", label: "Nick đang bán", icon: "package" as const },
-  { value: "99.8%", label: "Hài lòng", icon: "trending" as const },
-  { value: "24/7", label: "Hỗ trợ trực tuyến", icon: "clock" as const },
+  { value: "8K+", label: "Người chơi tin chọn", icon: "users" as const },
+  { value: "500+", label: "Account Roblox", icon: "package" as const },
+  { value: "100%", label: "Thông tin rõ ràng", icon: "trending" as const },
+  { value: "24/7", label: "Có người hỗ trợ", icon: "clock" as const },
 ];
 
 /** Live activity ticker items. */
 export const activityFeed: ActivityItem[] = [
-  { username: "vu***quan", action: "vừa mua nick Liên Quân Tier Cao Thủ — 850K" },
-  { username: "ng***minh", action: "vừa nạp 500K qua Vietcombank" },
-  { username: "ph***thao", action: "vừa trúng iPhone 15 từ Vòng quay" },
-  { username: "le***duy", action: "vừa mua nick Free Fire Tier Bạch Kim — 420K" },
-  { username: "tr***vinh", action: "vừa đặt cày rank Liên Minh — 200K" },
+  { username: "mi***anh", action: "vừa chọn account Blox Fruits level cao" },
+  { username: "bo***minh", action: "vừa nhận account Grow a Garden" },
+  { username: "an***khoi", action: "vừa mua account có pet hiếm" },
+  { username: "ga***bao", action: "vừa nhận account sau 2 phút" },
+  { username: "thu***vy", action: "vừa được hỗ trợ đổi bảo mật" },
 ];
 
 /** Monthly top-up leaderboard. */

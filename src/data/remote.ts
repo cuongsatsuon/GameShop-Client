@@ -178,7 +178,7 @@ export async function fetchAccountsByCategory(slug: string): Promise<Account[]> 
 /** Newest listings (home "Nick Mới Cập Nhật") — real accounts first, then vieblox. */
 export async function fetchNewestAccounts(limit = 12): Promise<Account[]> {
   const [real, vb] = await Promise.all([
-    apiGet<ApiAccount[]>(`/accounts?limit=${limit}`).then((d) => d.map(mapAccount)).catch(() => [] as Account[]),
+    apiGet<ApiAccount[]>(`/accounts?categorySlug=roblox&limit=${limit}`).then((d) => d.map(mapAccount)).catch(() => [] as Account[]),
     fetchViebloxCatalog(),
   ]);
   return [...real, ...vb.accounts].slice(0, limit);
@@ -187,7 +187,7 @@ export async function fetchNewestAccounts(limit = 12): Promise<Account[]> {
 /** Featured / hot listings (home "Nick Siêu Phẩm"). */
 export async function fetchFeaturedAccounts(limit = 5): Promise<Account[]> {
   const [real, vb] = await Promise.all([
-    apiGet<ApiAccount[]>(`/accounts?status=selling&limit=${limit}`).then((d) => d.map(mapAccount)).catch(() => [] as Account[]),
+    apiGet<ApiAccount[]>(`/accounts?categorySlug=roblox&status=selling&limit=${limit}`).then((d) => d.map(mapAccount)).catch(() => [] as Account[]),
     fetchViebloxCatalog(),
   ]);
   return [...real, ...vb.accounts].slice(0, limit);

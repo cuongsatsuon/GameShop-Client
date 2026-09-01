@@ -10,10 +10,10 @@ export async function NewArrivalsSection() {
     <section className="container-page">
       <SectionHeader
         icon={Clock}
-        title="Nick Mới"
-        highlight="Cập Nhật"
-        subtitle="Bộ sưu tập nick game vừa được đăng"
-        action={{ label: "Xem tất cả", href: "/category/lien-quan?sort=newest" }}
+        title="Account Mới"
+        highlight="Lên Kệ"
+        subtitle="Lựa chọn Roblox vừa được kiểm tra và cập nhật"
+        action={{ label: "Xem tất cả", href: "/category/roblox?sort=newest" }}
       />
       <AccountGrid accounts={accounts} className="mt-6" />
     </section>

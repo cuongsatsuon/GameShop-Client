@@ -83,7 +83,7 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
             type="search"
-            placeholder="Tìm nick game, ID..."
+          placeholder="Tìm account, game, ID..."
             className="h-10 w-full rounded-lg border border-input bg-secondary/60 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-primary/60 focus-visible:outline-none"
           />
         </div>
@@ -111,7 +111,7 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <input
                 type="search"
-                placeholder="Tìm nick game, ID..."
+                placeholder="Tìm account, game, ID..."
                 className="h-11 w-full rounded-lg border border-input bg-secondary/60 pl-9 pr-3 text-sm placeholder:text-muted-foreground focus-visible:border-primary/60 focus-visible:outline-none"
               />
             </div>

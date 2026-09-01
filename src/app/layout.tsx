@@ -25,8 +25,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "SHOPNICK · Mua bán nick game uy tín #1",
-    template: "%s · SHOPNICK",
+    default: "BLOXSHOP · Account Roblox dễ chọn",
+    template: "%s · BLOXSHOP",
   },
   description: siteConfig.description,
 };

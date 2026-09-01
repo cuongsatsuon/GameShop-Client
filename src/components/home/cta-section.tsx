@@ -1,26 +1,17 @@
+import { ArrowRight, ShieldCheck } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 
 export function CtaSection() {
   return (
     <section className="container-page">
-      <div className="surface relative overflow-hidden bg-gradient-brand-soft p-8 text-center sm:p-14">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_80%_at_50%_0%,hsl(var(--primary)/0.25),transparent_70%)]" />
+      <div className="relative overflow-hidden rounded-[2rem] border border-cyan-300/20 bg-gradient-to-br from-violet-600/25 via-card to-cyan-500/10 px-6 py-10 text-center sm:px-12 sm:py-14">
+        <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-violet-500/20 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -right-20 h-64 w-64 rounded-full bg-cyan-400/15 blur-3xl" />
         <div className="relative">
-          <h2 className="font-display text-3xl font-extrabold uppercase sm:text-5xl">
-            Sẵn sàng <span className="text-gradient-brand">săn nick</span>?
-          </h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground sm:text-base">
-            Đăng ký ngay để nhận ưu đãi tân thủ, cộng tiền chào mừng và tham gia vòng quay
-            miễn phí.
-          </p>
-          <div className="mt-7 flex flex-wrap justify-center gap-3">
-            <ButtonLink href="/register" variant="gradient" size="lg">
-              Đăng ký miễn phí
-            </ButtonLink>
-            <ButtonLink href="/spin" variant="outline" size="lg">
-              Thử vòng quay
-            </ButtonLink>
-          </div>
+          <span className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-cyan-300/10 text-cyan-300"><ShieldCheck className="h-6 w-6" /></span>
+          <h2 className="mt-5 font-display text-3xl font-black uppercase sm:text-5xl">Sẵn sàng vào game?</h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">Chọn account phù hợp, đọc kỹ thông tin và nhờ người lớn hỗ trợ nếu bạn chưa đủ 16 tuổi.</p>
+          <ButtonLink href="/category/roblox" variant="gradient" size="lg" className="mt-7 rounded-xl">Xem account Roblox <ArrowRight className="h-4 w-4" /></ButtonLink>
         </div>
       </div>
     </section>

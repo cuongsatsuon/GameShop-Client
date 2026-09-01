@@ -1,17 +1,15 @@
 import { HeroSection } from "@/components/home/hero-section";
 import { StatsBar } from "@/components/home/stats-bar";
 import { ActivityTicker } from "@/components/home/activity-ticker";
-import { FlashSaleSection } from "@/components/home/flash-sale-section";
-import { CategorySection } from "@/components/home/category-section";
 import { FeaturedSection } from "@/components/home/featured-section";
-import { LeaderboardSection } from "@/components/home/leaderboard-section";
 import { NewArrivalsSection } from "@/components/home/new-arrivals-section";
-import { BlogSection } from "@/components/home/blog-section";
 import { CtaSection } from "@/components/home/cta-section";
+import { RobloxDiscoverySection } from "@/components/home/roblox-discovery-section";
+import { QuickTopupSection } from "@/components/home/quick-topup-section";
 
 export default function HomePage() {
   return (
-    <div className="space-y-12 pb-16">
+    <div className="space-y-14 pb-16 sm:space-y-20">
       <HeroSection />
 
       <section className="container-page space-y-6">
@@ -19,12 +17,11 @@ export default function HomePage() {
         <ActivityTicker />
       </section>
 
-      <FlashSaleSection />
-      <CategorySection />
+      <QuickTopupSection />
+
+      <RobloxDiscoverySection />
       <FeaturedSection />
-      <LeaderboardSection />
       <NewArrivalsSection />
-      <BlogSection />
       <CtaSection />
     </div>
   );

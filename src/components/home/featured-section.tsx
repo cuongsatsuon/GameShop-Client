@@ -10,10 +10,10 @@ export async function FeaturedSection() {
     <section className="container-page">
       <SectionHeader
         icon={Sparkles}
-        title="Nick"
-        highlight="Siêu Phẩm"
-        subtitle="Những nick được săn đón nhiều nhất"
-        action={{ label: "Xem tất cả", href: "/category/lien-quan" }}
+        title="Account"
+        highlight="Nổi Bật"
+        subtitle="Những lựa chọn Roblox được quan tâm nhiều nhất"
+        action={{ label: "Xem tất cả", href: "/category/roblox" }}
       />
       <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
         {accounts.map((account) => (

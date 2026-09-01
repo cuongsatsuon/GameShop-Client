@@ -2,26 +2,24 @@ import type { Carrier } from "@/types";
 
 /** Global, presentation-level site configuration (nav, brand, static option lists). */
 export const siteConfig = {
-  name: "SHOPNICK",
-  wordmark: { first: "SHOP", second: "NICK" },
-  tagline: "UY TÍN · 24/7",
+  name: "BLOXSHOP",
+  wordmark: { first: "BLOX", second: "SHOP" },
+  tagline: "PLAY · SAFE · FUN",
   description:
-    "Nền tảng mua bán nick game uy tín #1 Việt Nam — giao dịch tự động 24/7, bảo hành trọn đời, hỗ trợ đa kênh.",
+    "Cửa hàng account Roblox dễ chọn, thông tin rõ ràng và hỗ trợ 24/7.",
   legal: {
-    copyright: "© 2026 SHOPNICK. Bản quyền thuộc về SHOPNICK.",
-    license: "Ngân hàng nhà nước cấp phép · MST: 0123456789",
+    copyright: "© 2026 BLOXSHOP. Bản quyền thuộc về BLOXSHOP.",
+    license: "Giao dịch minh bạch · Hỗ trợ người dùng 24/7",
   },
 } as const;
 
 /** Primary navigation shown in the header. */
 export const mainNav = [
   { label: "Trang chủ", href: "/" },
-  { label: "Mua nick", href: "/category/lien-quan" },
-  { label: "Cày thuê", href: "/service" },
-  { label: "Items", href: "/items" },
-  { label: "Flash Sale", href: "/flash-sale", accent: true },
-  { label: "Vòng quay", href: "/spin", accent: true },
-  { label: "Blog", href: "/blog" },
+  { label: "Account Roblox", href: "/category/roblox" },
+  { label: "Blox Fruits", href: "/category/roblox?game=blox-fruits" },
+  { label: "Vật phẩm", href: "/items" },
+  { label: "Hướng dẫn", href: "/policy/faq" },
 ] as const;
 
 /** Mobile carriers for the card top-up widget. */
@@ -42,11 +40,11 @@ export const itemAmounts = [50000, 100000, 200000, 500000, 1000000, 2000000];
 
 /** Footer product links. */
 export const footerProducts = [
-  { label: "Liên Quân", href: "/category/lien-quan" },
-  { label: "Free Fire", href: "/category/free-fire" },
-  { label: "Liên Minh", href: "/category/lien-minh" },
-  { label: "Genshin Impact", href: "/category/genshin" },
-  { label: "Roblox", href: "/category/roblox" },
+  { label: "Account Roblox", href: "/category/roblox" },
+  { label: "Blox Fruits", href: "/category/roblox?game=blox-fruits" },
+  { label: "Grow a Garden", href: "/category/roblox?game=grow-a-garden" },
+  { label: "Adopt Me!", href: "/category/roblox?game=adopt-me" },
+  { label: "Vật phẩm", href: "/items" },
 ];
 
 /** Footer support links. */
