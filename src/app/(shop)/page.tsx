@@ -4,8 +4,6 @@ import { ActivityTicker } from "@/components/home/activity-ticker";
 import { FeaturedSection } from "@/components/home/featured-section";
 import { NewArrivalsSection } from "@/components/home/new-arrivals-section";
 import { CtaSection } from "@/components/home/cta-section";
-import { RobloxDiscoverySection } from "@/components/home/roblox-discovery-section";
-import { QuickTopupSection } from "@/components/home/quick-topup-section";
 
 export default function HomePage() {
   return (
@@ -17,9 +15,6 @@ export default function HomePage() {
         <ActivityTicker />
       </section>
 
-      <QuickTopupSection />
-
-      <RobloxDiscoverySection />
       <FeaturedSection />
       <NewArrivalsSection />
       <CtaSection />
