@@ -7,17 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Input, FieldLabel } from "@/components/ui/input";
 import { GameImage } from "@/components/ui/game-image";
 import { apiPost } from "@/lib/auth-client";
-import { cn, formatNumber, formatVND } from "@/lib/utils";
-import { receivedUnits, type ItemProduct } from "@/lib/items";
+import { formatVND } from "@/lib/utils";
+import { type ItemProduct } from "@/lib/items";
 
-const AMOUNT_PRESETS = [50000, 100000, 200000, 500000, 1000000, 2000000];
 const DEFAULT_IMAGE = "/images/services/service-default.png";
 
 export function ItemsShop({ items, isLoggedIn }: { items: ItemProduct[]; isLoggedIn: boolean }) {
   const router = useRouter();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [amount, setAmount] = useState(50000);
   const [target, setTarget] = useState("");
   const [password, setPassword] = useState("");
   const [note, setNote] = useState("");
@@ -26,8 +24,6 @@ export function ItemsShop({ items, isLoggedIn }: { items: ItemProduct[]; isLogge
   const [done, setDone] = useState<string | null>(null);
 
   const selected = useMemo(() => items.find((item) => item.id === selectedId) ?? null, [selectedId, items]);
-  const received = selected ? receivedUnits(selected.ratePer1000, amount) : 0;
-  const presets = selected ? AMOUNT_PRESETS.filter((value) => value >= selected.minAmount && value <= selected.maxAmount) : [];
 
   useEffect(() => {
     if (!modalOpen) return;
@@ -45,7 +41,6 @@ export function ItemsShop({ items, isLoggedIn }: { items: ItemProduct[]; isLogge
 
   function chooseItem(item: ItemProduct) {
     setSelectedId(item.id);
-    setAmount(item.minAmount);
     setError(null);
     setDone(null);
     setModalOpen(true);
@@ -71,7 +66,6 @@ export function ItemsShop({ items, isLoggedIn }: { items: ItemProduct[]; isLogge
     try {
       await apiPost("/orders/items", {
         itemProductId: selected.id,
-        amount: Number(amount),
         targetUsername: target.trim(),
         targetPassword: password.trim() || undefined,
         note: note.trim() || undefined,
@@ -113,11 +107,9 @@ export function ItemsShop({ items, isLoggedIn }: { items: ItemProduct[]; isLogge
             </div>
             <div className="flex flex-1 flex-col p-4">
               <h3 className="line-clamp-2 font-bold text-white">{item.name}</h3>
-              <p className="mt-1 text-xs text-muted-foreground">Đơn vị: {item.unit}</p>
-              <p className="mt-2 text-xs leading-5 text-muted-foreground">Từ {formatVND(item.minAmount)} đến {formatVND(item.maxAmount)}</p>
               <div className="mt-4 flex items-end justify-between gap-3 border-t border-white/10 pt-4">
-                <div><span className="block text-[10px] uppercase tracking-wide text-muted-foreground">Giá từ</span><span className="font-display text-lg font-extrabold text-primary">{formatVND(item.minAmount)}</span></div>
-                <Button type="button" size="sm" variant="gradient" className="rounded-xl" onClick={() => chooseItem(item)}>Chọn <ArrowRight className="h-3.5 w-3.5" /></Button>
+                <div><span className="block text-[10px] uppercase tracking-wide text-muted-foreground">Giá</span><span className="font-display text-lg font-extrabold text-primary">{formatVND(item.price)}</span></div>
+                <Button type="button" size="sm" variant="gradient" className="rounded-xl" onClick={() => chooseItem(item)}>Mua <ArrowRight className="h-3.5 w-3.5" /></Button>
               </div>
             </div>
           </article>
@@ -141,17 +133,13 @@ export function ItemsShop({ items, isLoggedIn }: { items: ItemProduct[]; isLogge
               </div>
             ) : (
               <form onSubmit={buy} className="space-y-4 p-5 sm:p-6">
-                {presets.length > 0 && (
-                  <div><FieldLabel>Số tiền cần dùng</FieldLabel><div className="grid grid-cols-3 gap-2">{presets.map((value) => <button key={value} type="button" onClick={() => setAmount(value)} className={cn("rounded-xl border py-2.5 text-sm font-semibold transition", amount === value ? "border-primary bg-primary text-primary-foreground" : "border-border bg-secondary/50 hover:border-primary/40")}>{formatVND(value)}</button>)}</div></div>
-                )}
-                <div><FieldLabel>Hoặc nhập số tiền (₫)</FieldLabel><Input type="number" min={selected.minAmount} max={selected.maxAmount} value={amount} onChange={(event) => setAmount(Number(event.target.value) || 0)} /><p className="mt-1 text-xs text-muted-foreground">Tối thiểu {formatVND(selected.minAmount)} · tối đa {formatVND(selected.maxAmount)}</p></div>
-                <div className="rounded-2xl border border-violet-400/20 bg-gradient-brand-soft p-4 text-center"><p className="text-xs uppercase tracking-wide text-muted-foreground">Bạn sẽ nhận được</p><p className="mt-1 font-display text-3xl font-extrabold text-primary">{formatNumber(received)}</p><p className="text-sm text-muted-foreground">{selected.unit}</p></div>
+                <div className="flex items-center justify-between rounded-2xl border border-violet-400/20 bg-gradient-brand-soft p-4"><span className="text-xs uppercase tracking-wide text-muted-foreground">Giá</span><span className="font-display text-3xl font-extrabold text-primary">{formatVND(selected.price)}</span></div>
                 <div><FieldLabel>Tên tài khoản game</FieldLabel><Input value={target} onChange={(event) => setTarget(event.target.value)} placeholder="ID hoặc username" required /></div>
                 <div><FieldLabel>Mật khẩu (tuỳ chọn)</FieldLabel><Input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="••••••" /></div>
                 <div><FieldLabel>Ghi chú</FieldLabel><Input value={note} onChange={(event) => setNote(event.target.value)} placeholder="Yêu cầu thêm..." /></div>
                 <p className="flex items-start gap-2 rounded-xl border border-cyan-300/15 bg-cyan-300/5 px-3 py-2.5 text-xs leading-5 text-muted-foreground"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-cyan-300" />Item được giao tự động trong 1–15 phút. Chỉ nhập mật khẩu khi loại item yêu cầu.</p>
                 {error && <p className="rounded-xl bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>}
-                <Button type="submit" variant="gradient" size="lg" className="w-full rounded-xl" disabled={loading}><Zap className="h-4 w-4" /> {loading ? "Đang xử lý..." : `Mua ngay · ${formatVND(amount)}`}</Button>
+                <Button type="submit" variant="gradient" size="lg" className="w-full rounded-xl" disabled={loading}><Zap className="h-4 w-4" /> {loading ? "Đang xử lý..." : `Mua ngay · ${formatVND(selected.price)}`}</Button>
               </form>
             )}
           </div>
