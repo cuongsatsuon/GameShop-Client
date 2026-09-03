@@ -16,8 +16,8 @@ export const siteConfig = {
 /** Primary navigation shown in the header. */
 export const mainNav = [
   { label: "Trang chủ", href: "/" },
-  { label: "Account Roblox", href: "/category/roblox" },
-  { label: "Blox Fruits", href: "/category/roblox?game=blox-fruits" },
+  { label: "Account Roblox", href: "/nick" },
+  { label: "Blox Fruits", href: "/nick?q=blox" },
   { label: "Vật phẩm", href: "/items" },
   { label: "Hướng dẫn", href: "/policy/faq" },
 ] as const;
@@ -40,10 +40,10 @@ export const itemAmounts = [50000, 100000, 200000, 500000, 1000000, 2000000];
 
 /** Footer product links. */
 export const footerProducts = [
-  { label: "Account Roblox", href: "/category/roblox" },
-  { label: "Blox Fruits", href: "/category/roblox?game=blox-fruits" },
-  { label: "Grow a Garden", href: "/category/roblox?game=grow-a-garden" },
-  { label: "Adopt Me!", href: "/category/roblox?game=adopt-me" },
+  { label: "Account Roblox", href: "/nick" },
+  { label: "Blox Fruits", href: "/nick?q=blox" },
+  { label: "Grow a Garden", href: "/nick?q=grow" },
+  { label: "Adopt Me!", href: "/nick?q=adopt" },
   { label: "Vật phẩm", href: "/items" },
 ];
 

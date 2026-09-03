@@ -13,7 +13,7 @@ export async function FeaturedSection() {
         title="Account"
         highlight="Nổi Bật"
         subtitle="Những lựa chọn Roblox được quan tâm nhiều nhất"
-        action={{ label: "Xem tất cả", href: "/category/roblox" }}
+        action={{ label: "Xem tất cả", href: "/nick" }}
       />
       <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
         {accounts.map((account) => (

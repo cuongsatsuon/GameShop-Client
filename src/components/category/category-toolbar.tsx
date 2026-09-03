@@ -17,15 +17,22 @@ const sortOptions: { label: string; value: Sort }[] = [
 ];
 
 /** Client-side search + sort toolbar over a category's accounts. */
-export function CategoryToolbar({ accounts }: { accounts: Account[] }) {
-  const [query, setQuery] = useState("");
+export function CategoryToolbar({ accounts, initialQuery = "" }: { accounts: Account[]; initialQuery?: string }) {
+  const [query, setQuery] = useState(initialQuery);
   const [sort, setSort] = useState<Sort>("newest");
 
   const result = useMemo(() => {
-    const q = query.toLowerCase();
-    const filtered = accounts.filter(
-      (a) => String(a.id).includes(query) || a.seller.toLowerCase().includes(q)
-    );
+    const q = query.toLowerCase().trim();
+    const filtered = q
+      ? accounts.filter(
+          (a) =>
+            String(a.id).includes(q) ||
+            a.seller.toLowerCase().includes(q) ||
+            a.game.toLowerCase().includes(q) ||
+            a.tier.toLowerCase().includes(q) ||
+            a.rank.toLowerCase().includes(q)
+        )
+      : accounts;
     if (sort === "price-asc") return [...filtered].sort((a, b) => a.price - b.price);
     if (sort === "price-desc") return [...filtered].sort((a, b) => b.price - a.price);
     return filtered;
@@ -39,7 +46,7 @@ export function CategoryToolbar({ accounts }: { accounts: Account[] }) {
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Tìm theo ID, người đăng..."
+            placeholder="Tìm theo tên, game, ID..."
             className="pl-9"
           />
         </div>

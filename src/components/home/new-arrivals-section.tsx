@@ -13,7 +13,7 @@ export async function NewArrivalsSection() {
         title="Account Mới"
         highlight="Lên Kệ"
         subtitle="Lựa chọn Roblox vừa được kiểm tra và cập nhật"
-        action={{ label: "Xem tất cả", href: "/category/roblox?sort=newest" }}
+        action={{ label: "Xem tất cả", href: "/nick" }}
       />
       <AccountGrid accounts={accounts} className="mt-6" />
     </section>
