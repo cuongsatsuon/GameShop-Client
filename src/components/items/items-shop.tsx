@@ -1,25 +1,23 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Sparkles, Zap } from "lucide-react";
+import { ArrowRight, CheckCircle2, ShieldCheck, Sparkles, X, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, FieldLabel } from "@/components/ui/input";
 import { GameImage } from "@/components/ui/game-image";
 import { apiPost } from "@/lib/auth-client";
-import { cn, formatVND, formatNumber } from "@/lib/utils";
+import { cn, formatNumber, formatVND } from "@/lib/utils";
 import { receivedUnits, type ItemProduct } from "@/lib/items";
 
 const AMOUNT_PRESETS = [50000, 100000, 200000, 500000, 1000000, 2000000];
+const DEFAULT_IMAGE = "/images/services/service-default.png";
 
 export function ItemsShop({ items, isLoggedIn }: { items: ItemProduct[]; isLoggedIn: boolean }) {
   const router = useRouter();
-  const [selectedId, setSelectedId] = useState(items[0]?.id ?? 0);
-  const selected = useMemo(
-    () => items.find((p) => p.id === selectedId) ?? items[0],
-    [selectedId, items]
-  );
-  const [amount, setAmount] = useState(items[0]?.minAmount ?? 50000);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [amount, setAmount] = useState(50000);
   const [target, setTarget] = useState("");
   const [password, setPassword] = useState("");
   const [note, setNote] = useState("");
@@ -27,15 +25,42 @@ export function ItemsShop({ items, isLoggedIn }: { items: ItemProduct[]; isLogge
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
 
-  if (!selected) {
-    return <p className="surface py-10 text-center text-muted-foreground">Chưa có sản phẩm.</p>;
+  const selected = useMemo(() => items.find((item) => item.id === selectedId) ?? null, [selectedId, items]);
+  const received = selected ? receivedUnits(selected.ratePer1000, amount) : 0;
+  const presets = selected ? AMOUNT_PRESETS.filter((value) => value >= selected.minAmount && value <= selected.maxAmount) : [];
+
+  useEffect(() => {
+    if (!modalOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !loading) setModalOpen(false);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [modalOpen, loading]);
+
+  function chooseItem(item: ItemProduct) {
+    setSelectedId(item.id);
+    setAmount(item.minAmount);
+    setError(null);
+    setDone(null);
+    setModalOpen(true);
   }
 
-  const received = receivedUnits(selected.ratePer1000, amount);
-  const presets = AMOUNT_PRESETS.filter((v) => v >= selected.minAmount && v <= selected.maxAmount);
+  function closeModal() {
+    if (loading) return;
+    setModalOpen(false);
+    setError(null);
+    setDone(null);
+  }
 
-  async function buy(e: React.FormEvent) {
-    e.preventDefault();
+  async function buy(event: React.FormEvent) {
+    event.preventDefault();
+    if (!selected) return;
     if (!isLoggedIn) {
       router.push("/login");
       return;
@@ -51,7 +76,10 @@ export function ItemsShop({ items, isLoggedIn }: { items: ItemProduct[]; isLogge
         targetPassword: password.trim() || undefined,
         note: note.trim() || undefined,
       });
-      setDone("Đặt hàng thành công! Items sẽ được giao trong ít phút.");
+      setDone("Đặt hàng thành công! Item sẽ được giao trong ít phút.");
+      setTarget("");
+      setPassword("");
+      setNote("");
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Mua thất bại");
@@ -60,110 +88,75 @@ export function ItemsShop({ items, isLoggedIn }: { items: ItemProduct[]; isLogge
     }
   }
 
+  if (items.length === 0) {
+    return <p className="surface py-10 text-center text-muted-foreground">Chưa có sản phẩm.</p>;
+  }
+
   return (
-    <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-      {/* LEFT: product grid */}
-      <div>
-        <h2 className="mb-3 text-sm font-semibold uppercase text-muted-foreground">Chọn loại items</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {items.map((p) => (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => {
-                setSelectedId(p.id);
-                setAmount(p.minAmount);
-                setDone(null);
-                setError(null);
-              }}
-              className={cn(
-                "surface overflow-hidden text-left transition",
-                p.id === selectedId ? "border-primary ring-1 ring-primary" : "surface-hover"
-              )}
-            >
-              <div className="relative aspect-[16/9]">
-                <GameImage src={p.image} alt={p.name} className="h-full w-full" sizes="(max-width:768px) 100vw, 300px" />
-              </div>
-              <div className="p-3">
-                <p className="font-semibold">{p.name}</p>
-                <p className="text-xs text-muted-foreground">Đơn vị: {p.unit}</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {formatVND(p.minAmount)} - {formatVND(p.maxAmount)}
-                </p>
-              </div>
-            </button>
-          ))}
+    <div>
+      <div className="mb-4 flex items-end justify-between gap-3">
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-cyan-300">Kho vật phẩm</p>
+          <h2 className="mt-1 font-display text-xl font-extrabold uppercase">Chọn item bạn cần</h2>
         </div>
+        <span className="text-xs text-muted-foreground">{items.length} sản phẩm</span>
       </div>
 
-      {/* RIGHT: purchase panel */}
-      <form onSubmit={buy} className="surface space-y-4 p-5 lg:sticky lg:top-24">
-        <div className="flex items-center gap-2 font-display uppercase">
-          <Sparkles className="h-4 w-4 text-primary" />
-          {selected.name}
-        </div>
-
-        {presets.length > 0 && (
-          <div>
-            <FieldLabel>Số tiền cần dùng</FieldLabel>
-            <div className="grid grid-cols-3 gap-2">
-              {presets.map((v) => (
-                <button
-                  key={v}
-                  type="button"
-                  onClick={() => setAmount(v)}
-                  className={cn(
-                    "rounded-lg border py-2 text-sm font-semibold",
-                    amount === v ? "border-primary bg-primary text-primary-foreground" : "border-border bg-secondary/50"
-                  )}
-                >
-                  {formatVND(v)}
-                </button>
-              ))}
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {items.map((item, index) => (
+          <article key={item.id} className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-violet-500/15 via-card to-cyan-500/5 transition duration-300 hover:-translate-y-1 hover:border-violet-300/40 hover:shadow-[0_20px_50px_-30px_rgba(124,58,237,.9)]">
+            <div className="relative aspect-square w-full overflow-hidden bg-violet-500/10">
+              <GameImage src={item.image || DEFAULT_IMAGE} alt={item.name} className="h-full w-full" sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 280px" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card/75 via-transparent to-transparent" />
+              <span className="absolute left-3 top-3 grid h-9 w-9 place-items-center rounded-xl border border-white/15 bg-background/65 font-display text-xs font-black text-violet-100 backdrop-blur">{String(index + 1).padStart(2, "0")}</span>
+              <Sparkles className="absolute right-3 top-3 h-4 w-4 text-cyan-200 drop-shadow" />
             </div>
+            <div className="flex flex-1 flex-col p-4">
+              <h3 className="line-clamp-2 font-bold text-white">{item.name}</h3>
+              <p className="mt-1 text-xs text-muted-foreground">Đơn vị: {item.unit}</p>
+              <p className="mt-2 text-xs leading-5 text-muted-foreground">Từ {formatVND(item.minAmount)} đến {formatVND(item.maxAmount)}</p>
+              <div className="mt-4 flex items-end justify-between gap-3 border-t border-white/10 pt-4">
+                <div><span className="block text-[10px] uppercase tracking-wide text-muted-foreground">Giá từ</span><span className="font-display text-lg font-extrabold text-primary">{formatVND(item.minAmount)}</span></div>
+                <Button type="button" size="sm" variant="gradient" className="rounded-xl" onClick={() => chooseItem(item)}>Chọn <ArrowRight className="h-3.5 w-3.5" /></Button>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      {modalOpen && selected && (
+        <div className="fixed inset-0 z-[80] flex items-end justify-center bg-black/75 p-0 backdrop-blur-sm sm:items-center sm:p-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) closeModal(); }}>
+          <div role="dialog" aria-modal="true" aria-labelledby="item-dialog-title" className="max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-t-[2rem] border border-white/10 bg-card shadow-2xl sm:rounded-[2rem]">
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-card/95 px-5 py-4 backdrop-blur sm:px-6">
+              <div><p className="text-[11px] font-bold uppercase tracking-[0.16em] text-cyan-300">Mua item</p><h2 id="item-dialog-title" className="mt-1 font-display text-lg font-extrabold uppercase">{selected.name}</h2></div>
+              <button type="button" onClick={closeModal} disabled={loading} className="grid h-10 w-10 place-items-center rounded-xl border border-border text-muted-foreground transition hover:bg-secondary hover:text-white" aria-label="Đóng"><X className="h-5 w-5" /></button>
+            </div>
+
+            {done ? (
+              <div className="p-6 text-center sm:p-8">
+                <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-success/15 text-success"><CheckCircle2 className="h-7 w-7" /></span>
+                <h3 className="mt-4 text-xl font-bold">Đặt hàng thành công</h3>
+                <p className="mt-2 text-sm text-muted-foreground">{done}</p>
+                <Button type="button" variant="gradient" className="mt-6 w-full rounded-xl" onClick={closeModal}>Hoàn tất</Button>
+              </div>
+            ) : (
+              <form onSubmit={buy} className="space-y-4 p-5 sm:p-6">
+                {presets.length > 0 && (
+                  <div><FieldLabel>Số tiền cần dùng</FieldLabel><div className="grid grid-cols-3 gap-2">{presets.map((value) => <button key={value} type="button" onClick={() => setAmount(value)} className={cn("rounded-xl border py-2.5 text-sm font-semibold transition", amount === value ? "border-primary bg-primary text-primary-foreground" : "border-border bg-secondary/50 hover:border-primary/40")}>{formatVND(value)}</button>)}</div></div>
+                )}
+                <div><FieldLabel>Hoặc nhập số tiền (₫)</FieldLabel><Input type="number" min={selected.minAmount} max={selected.maxAmount} value={amount} onChange={(event) => setAmount(Number(event.target.value) || 0)} /><p className="mt-1 text-xs text-muted-foreground">Tối thiểu {formatVND(selected.minAmount)} · tối đa {formatVND(selected.maxAmount)}</p></div>
+                <div className="rounded-2xl border border-violet-400/20 bg-gradient-brand-soft p-4 text-center"><p className="text-xs uppercase tracking-wide text-muted-foreground">Bạn sẽ nhận được</p><p className="mt-1 font-display text-3xl font-extrabold text-primary">{formatNumber(received)}</p><p className="text-sm text-muted-foreground">{selected.unit}</p></div>
+                <div><FieldLabel>Tên tài khoản game</FieldLabel><Input value={target} onChange={(event) => setTarget(event.target.value)} placeholder="ID hoặc username" required /></div>
+                <div><FieldLabel>Mật khẩu (tuỳ chọn)</FieldLabel><Input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="••••••" /></div>
+                <div><FieldLabel>Ghi chú</FieldLabel><Input value={note} onChange={(event) => setNote(event.target.value)} placeholder="Yêu cầu thêm..." /></div>
+                <p className="flex items-start gap-2 rounded-xl border border-cyan-300/15 bg-cyan-300/5 px-3 py-2.5 text-xs leading-5 text-muted-foreground"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-cyan-300" />Item được giao tự động trong 1–15 phút. Chỉ nhập mật khẩu khi loại item yêu cầu.</p>
+                {error && <p className="rounded-xl bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>}
+                <Button type="submit" variant="gradient" size="lg" className="w-full rounded-xl" disabled={loading}><Zap className="h-4 w-4" /> {loading ? "Đang xử lý..." : `Mua ngay · ${formatVND(amount)}`}</Button>
+              </form>
+            )}
           </div>
-        )}
-
-        <div>
-          <FieldLabel>Hoặc nhập số tiền (₫)</FieldLabel>
-          <Input type="number" min={selected.minAmount} max={selected.maxAmount} value={amount} onChange={(e) => setAmount(Number(e.target.value) || 0)} />
-          <p className="mt-1 text-xs text-muted-foreground">
-            Tối thiểu {formatVND(selected.minAmount)} · tối đa {formatVND(selected.maxAmount)}
-          </p>
         </div>
-
-        <div className="surface bg-gradient-brand-soft p-4 text-center">
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">Bạn sẽ nhận được</p>
-          <p className="font-display text-3xl font-extrabold text-primary">{formatNumber(received)}</p>
-          <p className="text-sm text-muted-foreground">{selected.unit}</p>
-        </div>
-
-        <div>
-          <FieldLabel>Tên tài khoản game</FieldLabel>
-          <Input value={target} onChange={(e) => setTarget(e.target.value)} placeholder="ID hoặc username" required />
-        </div>
-
-        <div>
-          <FieldLabel>Mật khẩu (tuỳ chọn)</FieldLabel>
-          <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••" />
-        </div>
-
-        <div>
-          <FieldLabel>Ghi chú</FieldLabel>
-          <Input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Yêu cầu thêm..." />
-        </div>
-
-        {done && <p className="rounded-lg bg-success/10 px-3 py-2 text-sm text-success">{done}</p>}
-        {error && <p className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>}
-
-        <Button type="submit" variant="gradient" size="lg" className="w-full" disabled={loading}>
-          <Zap className="h-4 w-4" /> {loading ? "Đang xử lý..." : `Mua ngay · ${formatVND(amount)}`}
-        </Button>
-
-        <p className="text-center text-xs text-muted-foreground">
-          Items được giao tự động trong 1-15 phút sau thanh toán.
-        </p>
-      </form>
+      )}
     </div>
   );
 }

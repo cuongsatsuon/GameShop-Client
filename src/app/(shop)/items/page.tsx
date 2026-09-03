@@ -24,7 +24,7 @@ export default async function ItemsPage() {
           Mua <span className="text-gradient-brand">Items / Tài Nguyên</span>
         </h1>
         <p className="text-sm text-muted-foreground">
-          Robux, Diamond, Vàng, UC... Giao items tự động trong vài phút.
+          Robux và vật phẩm Roblox được giao tự động trong vài phút.
         </p>
       </div>
 
