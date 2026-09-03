@@ -9,6 +9,8 @@ const nextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "i.pravatar.cc" },
       { protocol: "https", hostname: "www.vieblox.net" },
+      // admin can set a custom product image from any https host (vieblox content override)
+      { protocol: "https", hostname: "**" },
     ],
   },
 };

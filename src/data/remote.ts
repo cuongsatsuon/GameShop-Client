@@ -82,7 +82,8 @@ interface VbApiProduct {
   id: number;
   externalId: string;
   categoryExternalId: string | null;
-  name: string;
+  name: string; // effective (admin override ?? supplier name)
+  image: string | null; // admin override image; null → fall back to category icon
   description: string | null;
   price: number;
   stock: number;
@@ -115,7 +116,7 @@ function mapVbProduct(p: VbApiProduct, c: VbApiCategory): Account {
     skins: 0,
     price: p.price,
     views: 0,
-    images: [c.icon ?? `https://picsum.photos/seed/vb-${p.id}/640/420`],
+    images: [p.image ?? c.icon ?? `https://picsum.photos/seed/vb-${p.id}/640/420`],
     seller: "vieblox",
     createdAt: "",
     source: "vieblox",
