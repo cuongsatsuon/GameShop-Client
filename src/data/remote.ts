@@ -6,6 +6,7 @@
 import { cache } from "react";
 import { apiGet } from "@/lib/api";
 import type { Account, BlogPost, Category, LeaderboardEntry } from "@/types";
+import type { ApiGame, ApiService, ApiPackage } from "@/lib/boosting";
 
 // The BE doesn't store per-category gradients; keep the storefront's palette here.
 const GRADIENTS: Record<string, string> = {
@@ -249,6 +250,42 @@ export async function fetchFlashSaleAccounts(limit = 6): Promise<Account[]> {
       })
     );
     return accounts.filter((a): a is Account => a !== null);
+  } catch {
+    return [];
+  }
+}
+
+// ---- Boosting services (home "Dịch vụ" section) ----
+export interface ServiceHighlight {
+  id: number;
+  game: string;
+  name: string;
+  note: string;
+  priceFrom: number; // cheapest package price
+  packages: number;
+}
+
+/** Flatten the boosting tree into service cards (real data) for the home section. */
+export async function fetchServices(limit = 4): Promise<ServiceHighlight[]> {
+  try {
+    const games = await apiGet<ApiGame[]>("/boosting/games");
+    const out: ServiceHighlight[] = [];
+    for (const g of games) {
+      const services = await apiGet<ApiService[]>(`/boosting/games/${g.id}/services`);
+      for (const s of services) {
+        const pkgs = await apiGet<ApiPackage[]>(`/boosting/services/${s.id}/packages`);
+        const prices = pkgs.map((p) => Number(p.price)).filter((n) => Number.isFinite(n) && n > 0);
+        out.push({
+          id: Number(s.id),
+          game: g.name,
+          name: s.name,
+          note: s.detail?.note ?? "",
+          priceFrom: prices.length ? Math.min(...prices) : 0,
+          packages: pkgs.length,
+        });
+      }
+    }
+    return out.slice(0, limit);
   } catch {
     return [];
   }

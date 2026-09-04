@@ -4,7 +4,6 @@ import {
   Clock,
   Eye,
   ShieldCheck,
-  User,
   Zap,
 } from "lucide-react";
 import { fetchAccount, fetchSimilarAccounts } from "@/data/remote";
@@ -70,10 +69,6 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
             <span>#{account.id}</span>
-            <span className="inline-flex items-center gap-1.5">
-              <User className="h-4 w-4" />
-              {account.seller}
-            </span>
             {isVb ? (
               <span className="inline-flex items-center gap-1.5">
                 <Calendar className="h-4 w-4" />
@@ -137,7 +132,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           <div className="surface p-3 flex flex-wrap gap-x-5 gap-y-2 text-sm">
             <span className="inline-flex items-center gap-1.5">
               <ShieldCheck className="h-4 w-4 text-success" />
-              {isVb ? "Hàng từ nhà cung cấp" : "Bảo hành trọn đời"}
+              {isVb ? "Uy tín · bảo đảm" : "Bảo hành trọn đời"}
             </span>
             <span className="inline-flex items-center gap-1.5">
               <Zap className="h-4 w-4 text-primary" />
