@@ -35,7 +35,7 @@ export interface ApiService {
   gameId: number | string;
   name: string;
   typeCategory: string | null;
-  detail: { note?: string } | null;
+  detail: { note?: string; image?: string } | null;
 }
 
 export interface ApiPackage {

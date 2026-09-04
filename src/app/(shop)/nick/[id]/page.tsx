@@ -28,20 +28,6 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   ]);
 
   const isVb = account.source === "vieblox";
-  const specs: [string, string | number][] = isVb
-    ? [
-        ["Loại", account.rank],
-        ["Kho còn", formatNumber(account.stock ?? 0)],
-        ["Mua tối thiểu", account.minQty ?? 1],
-        ...(account.description ? ([["Mô tả", account.description]] as [string, string][]) : []),
-      ]
-    : [
-        ["Rank", account.rank],
-        ["Tướng", account.heroes],
-        ["Skin", account.skins],
-        ["Ngọc", "10 bảng"],
-        ["Hồ Sơ", "Trắng"],
-      ];
 
   return (
     <div className="container-page py-8 space-y-8">
@@ -144,20 +130,6 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
             </span>
           </div>
 
-          <div className="surface overflow-hidden">
-            <div className="border-b px-4 py-3 font-display text-sm uppercase">
-              {isVb ? "Thông tin sản phẩm" : "Thông tin nick"}
-            </div>
-            {specs.map(([label, value]) => (
-              <div
-                key={label}
-                className="flex justify-between border-b border-border px-4 py-3 last:border-0"
-              >
-                <span className="text-muted-foreground">{label}</span>
-                <span className="font-semibold">{value}</span>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 

@@ -39,9 +39,18 @@ export async function ServicesSection() {
             className={`group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br ${TONES[i % TONES.length]} p-5 transition duration-300 hover:-translate-y-1 hover:border-violet-300/40`}
           >
             <div className="flex items-start justify-between gap-3">
-              <span className="grid h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-black/15 text-2xl transition-transform group-hover:scale-110">
-                {ICONS[i % ICONS.length]}
-              </span>
+              {service.image ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={service.image}
+                  alt={service.name}
+                  className="h-12 w-12 shrink-0 rounded-2xl border border-white/10 object-cover transition-transform group-hover:scale-110"
+                />
+              ) : (
+                <span className="grid h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-black/15 text-2xl transition-transform group-hover:scale-110">
+                  {ICONS[i % ICONS.length]}
+                </span>
+              )}
               <Sparkles className="h-4 w-4 text-white/20 transition group-hover:text-cyan-300" />
             </div>
             <p className="mt-5 text-[11px] font-semibold uppercase tracking-wide text-violet-200">{service.game}</p>

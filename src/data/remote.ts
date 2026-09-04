@@ -261,6 +261,7 @@ export interface ServiceHighlight {
   game: string;
   name: string;
   note: string;
+  image: string | null; // admin-set service image (detail.image)
   priceFrom: number; // cheapest package price
   packages: number;
 }
@@ -280,6 +281,7 @@ export async function fetchServices(limit = 4): Promise<ServiceHighlight[]> {
           game: g.name,
           name: s.name,
           note: s.detail?.note ?? "",
+          image: s.detail?.image ?? null,
           priceFrom: prices.length ? Math.min(...prices) : 0,
           packages: pkgs.length,
         });
