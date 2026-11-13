@@ -266,28 +266,33 @@ export interface ServiceHighlight {
   packages: number;
 }
 
-/** Flatten the boosting tree into service cards (real data) for the home section. */
+/** Flatten the boosting tree into service cards (real data) for the home section.
+ *  Round-trips run in parallel (games → services → packages) instead of a
+ *  sequential N+1, so this isn't a per-visit bottleneck. */
 export async function fetchServices(limit = 4): Promise<ServiceHighlight[]> {
   try {
     const games = await apiGet<ApiGame[]>("/boosting/games");
-    const out: ServiceHighlight[] = [];
-    for (const g of games) {
-      const services = await apiGet<ApiService[]>(`/boosting/games/${g.id}/services`);
-      for (const s of services) {
-        const pkgs = await apiGet<ApiPackage[]>(`/boosting/services/${s.id}/packages`);
-        const prices = pkgs.map((p) => Number(p.price)).filter((n) => Number.isFinite(n) && n > 0);
-        out.push({
-          id: Number(s.id),
-          game: g.name,
-          name: s.name,
-          note: s.detail?.note ?? "",
-          image: s.detail?.image ?? null,
-          priceFrom: prices.length ? Math.min(...prices) : 0,
-          packages: pkgs.length,
-        });
-      }
-    }
-    return out.slice(0, limit);
+    const perGame = await Promise.all(
+      games.map(async (g) => {
+        const services = await apiGet<ApiService[]>(`/boosting/games/${g.id}/services`);
+        return Promise.all(
+          services.map(async (s) => {
+            const pkgs = await apiGet<ApiPackage[]>(`/boosting/services/${s.id}/packages`);
+            const prices = pkgs.map((p) => Number(p.price)).filter((n) => Number.isFinite(n) && n > 0);
+            return {
+              id: Number(s.id),
+              game: g.name,
+              name: s.name,
+              note: s.detail?.note ?? "",
+              image: s.detail?.image ?? null,
+              priceFrom: prices.length ? Math.min(...prices) : 0,
+              packages: pkgs.length,
+            } satisfies ServiceHighlight;
+          })
+        );
+      })
+    );
+    return perGame.flat().slice(0, limit);
   } catch {
     return [];
   }

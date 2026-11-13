@@ -5,6 +5,15 @@
  */
 const API_BASE = process.env.API_URL ?? "http://localhost:4080/api";
 
+// Cache catalog reads in prod so each page view isn't a fresh round-trip to the
+// BE (the main cause of slow TTFB). Dev stays uncached for instant feedback.
+// Override with API_REVALIDATE (seconds; 0 = always fresh).
+const REVALIDATE = Number(
+  process.env.API_REVALIDATE ?? (process.env.NODE_ENV === "production" ? "60" : "0")
+);
+const CACHE_OPT: RequestInit =
+  REVALIDATE > 0 ? { next: { revalidate: REVALIDATE } } : { cache: "no-store" };
+
 interface Envelope<T> {
   success: boolean;
   data: T;
@@ -14,8 +23,7 @@ interface Envelope<T> {
 /** GET a path and unwrap the `{ success, data }` envelope. Throws on non-2xx. */
 export async function apiGet<T>(path: string): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
-    // Always read fresh during development; swap to `next: { revalidate }` in prod.
-    cache: "no-store",
+    ...CACHE_OPT,
     headers: { accept: "application/json" },
   });
   if (!res.ok) throw new Error(`API GET ${path} → ${res.status}`);
